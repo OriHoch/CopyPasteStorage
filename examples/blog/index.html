@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CopyPasteStorage blog example</title>
+    <link rel="stylesheet" href="../../jquery/css/ui-lightness/jquery-ui-1.10.4.custom.min.css"/>
+    <script src="../../jquery/jquery-1.10.2.js"></script>
+    <script src="../../jquery/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="../../CopyPasteStorage.js"></script>
+    <script>
+        blog = {
+            'storage': new CopyPasteStorage(),
+            'add': function()
+            {
+                var title = $('#newPostTitle').val();
+                var content = $('#newPostContent').val();
+                var posts = this.storage.get('posts', []);
+                posts.push({'title': title, 'content': content});
+                this.storage.set('posts', posts);
+                this.storage.save(function(status){
+                    if (status) {
+                        blog.refresh();
+                    }
+                });
+            },
+            'load': function()
+            {
+                this.storage.load(function() {
+                    blog.refresh();
+                });
+            },
+            'refresh': function()
+            {
+                $('#posts').html('');
+                var posts = this.storage.get('posts', []);
+                for (var i in posts) {
+                    var post = posts[i];
+                    $('#posts')
+                        .append($('<h3/>').text(post.title))
+                        .append($('<pre/>').text(post.content));
+                }
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>CopyPasteStorage blog example</h1>
+    <h2>Posts</h2>
+    <a href="javascript:blog.load();">Load Posts</a>
+    <div id="posts"></div>
+    <h2>Write a new post</h2>
+    <b>Title: </b> <input id="newPostTitle" type="text" style="width:50%;"/><br/>
+    <b>Content:</b><br/><textarea id="newPostContent" style="width:60%;height:100px;"></textarea><br/>
+    <a href="javascript:blog.add();">Add</a>
+</body>
+</html>
