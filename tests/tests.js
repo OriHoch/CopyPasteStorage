@@ -24,7 +24,7 @@ asyncTest("save", function(){
     }, function() {
         // this callback is called after the dialog is opened
         // it is an optional parameter which in normal usage you shouldn't use
-        equal($('#CopyPasteStorageDialog textarea').val(), '{"foo":"bar"}');
+        equal($('#CopyPasteStorageDialog textarea').val(), '-- CopyPasteStorage Data - do not modify this line and anything after it --{"foo":"bar"}-- End of CopyPasteStorage Data --');
         $('button.ui-button-text-only').click()
     });
 });
@@ -58,6 +58,20 @@ asyncTest("load - bad data", function(){
         // this callback is called after the dialog is opened
         // it is an optional parameter which in normal usage you shouldn't use
         $('#CopyPasteStorageDialog textarea').val('{123');
+        $('button.ui-button-text-only').click();
+    });
+});
+
+asyncTest("load - with prefix", function(){
+    var storage = new CopyPasteStorage();
+    storage.load(function(status) {
+        equal(status, true);
+        equal(storage.get('foo'), 'bar');
+        start();
+    }, function() {
+        // this callback is called after the dialog is opened
+        // it is an optional parameter which in normal usage you shouldn't use
+        $('#CopyPasteStorageDialog textarea').val('BLAHBLAHBLAH -- CopyPasteStorage Data - do not modify this line and anything after it --{"foo":"bar"}-- End of CopyPasteStorage Data --');
         $('button.ui-button-text-only').click();
     });
 });

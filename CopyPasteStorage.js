@@ -34,7 +34,7 @@ CopyPasteStorage.prototype = {
                     .html('This application uses the CopyPasteStorage library to store the data.<br/>It lets you decide where and how to store the data, just copy and paste it somewhere safe for retrieval later.<br/><br/>')
                     .append(
                         $('<textarea/>')
-                            .text(JSON.stringify(this._data))
+                            .text('-- CopyPasteStorage Data - do not modify this line and anything after it --'+JSON.stringify(this._data)+'-- End of CopyPasteStorage Data --')
                             .css('width', '100%')
                     )
             )
@@ -84,7 +84,16 @@ CopyPasteStorage.prototype = {
                         'text': "OK, I pasted the data, you can load it",
                         'click': function() {
                             try {
-                                storage._data = JSON.parse($(this).find('textarea').val());
+                                var data = $(this).find('textarea').val();
+                                var tmp = data.split('-- CopyPasteStorage Data - do not modify this line and anything after it --');
+                                if (tmp.length == 2) {
+                                    data = tmp[1];
+                                    tmp = data.split('-- End of CopyPasteStorage Data --');
+                                    if (tmp.length == 2) {
+                                        data = tmp[0];
+                                    }
+                                }
+                                storage._data = JSON.parse(data);
                                 status = true;
                             } catch (e) {
                                 alert('invalid data');
